@@ -1,0 +1,18 @@
+# Ignore node_modules folder
+node_modules/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Dependency directories
+bower_components/
+
+# Optional: Environment files
+.env
+
+# Optional: OS files
+.DS_Store
+Thumbs.db
+

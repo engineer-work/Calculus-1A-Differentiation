@@ -1,99 +1,62 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Calculus 1A: Differentiation</title>
+    
+    <!-- Tailwind CSS CDN: Required for AI Studio Preview where PostCSS build doesn't run. 
+         For local production builds (Vite), PostCSS will handle the CSS, but this CDN 
+         acts as a failsafe for the preview environment. -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-      /* Custom Scrollbar for Webkit */
-      ::-webkit-scrollbar {
-        width: 8px;
-        height: 8px;
-      }
-      ::-webkit-scrollbar-track {
-        background: #f1f5f9; 
-      }
-      ::-webkit-scrollbar-thumb {
-        background: #cbd5e1; 
-        border-radius: 4px;
-      }
-      ::-webkit-scrollbar-thumb:hover {
-        background: #94a3b8; 
-      }
-      
-      /* Markdown content styles placeholder */
-      .markdown-body h1 { font-size: 1.5em; font-weight: bold; margin-top: 1em; margin-bottom: 0.5em; }
-      .markdown-body h2 { font-size: 1.25em; font-weight: bold; margin-top: 1em; margin-bottom: 0.5em; }
-      .markdown-body p { margin-bottom: 1em; line-height: 1.6; }
-      .markdown-body ul { list-style-type: disc; margin-left: 1.5em; margin-bottom: 1em; }
-      .markdown-body code { background-color: #f1f5f9; padding: 0.2em 0.4em; border-radius: 4px; font-family: monospace; font-size: 0.9em; }
-      .markdown-body pre { background-color: #1e293b; color: #f8fafc; padding: 1em; border-radius: 8px; overflow-x: auto; margin-bottom: 1em; }
-      .markdown-body pre code { background-color: transparent; padding: 0; color: inherit; }
-      .markdown-body blockquote { border-left: 4px solid #e2e8f0; padding-left: 1em; color: #64748b; font-style: italic; }
-      
-      /* MathJax specific overrides */
-      mjx-container[jax="CHTML"][display="inline"] {
-  display: inline !important;
-}
-
-mjx-container {
-  white-space: nowrap !important;
-}
-
-/* Prevent breaking MathJax inline formulas */
-mjx-container {
-  display: inline-block !important;
-  white-space: nowrap !important;
-}
-
-mjx-math {
-  white-space: nowrap !important;
-}
-
-     
-    </style>
     <script>
-window.MathJax = {
-  tex: {
-    inlineMath: [['$', '$'], ['\\(', '\\)']],
-    displayMath: [['$$', '$$'], ['\\[', '\\]']],
-    processEscapes: true
-  },
-  svg: {
-    fontCache: 'global'
-  },
-  startup: {
-    typeset: false  // React will trigger this manually
-  }
-};
+      tailwind.config = {
+        theme: {
+          extend: {},
+        },
+      }
+    </script>
 
+    <!-- MathJax Configuration -->
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          displayMath: [['$$', '$$'], ['\\[', '\\]']],
+          processEscapes: true
+        },
+        svg: {
+          fontCache: 'global'
+        },
+        startup: {
+          typeset: false // React will trigger this manually
+        }
+      };
+    </script>
 
-</script>
+    <!-- Load MathJax -->
+    <script
+      id="MathJax-script"
+      async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"
+      onload="MathJax.typesetPromise();"
+    ></script>
 
-<!-- Load MathJax -->
-<script
-  id="MathJax-script"
-  async
-  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"
-  onload="MathJax.typesetPromise();"
-></script>
-
-  <script type="importmap">
-{
-  "imports": {
-    "react": "https://aistudiocdn.com/react@^19.2.0",
-    "react/": "https://aistudiocdn.com/react@^19.2.0/",
-    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
-    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.30.0",
-    "react-markdown": "https://aistudiocdn.com/react-markdown@^10.1.0"
-  }
-}
-</script>
-<link rel="stylesheet" href="/index.css">
+    <script type="importmap">
+    {
+      "imports": {
+        "react": "https://aistudiocdn.com/react@^19.2.0",
+        "react/": "https://aistudiocdn.com/react@^19.2.0/",
+        "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+        "@google/genai": "https://aistudiocdn.com/@google/genai@^1.30.0",
+        "react-markdown": "https://aistudiocdn.com/react-markdown@^10.1.0"
+      }
+    }
+    </script>
+  <link rel="stylesheet" href="/index.css">
 </head>
-  <body class="bg-slate-50 text-slate-900 overflow-hidden">
-    <div id="root"></div>
+  <body class="bg-slate-50 text-slate-900 overflow-hidden h-full m-0 p-0">
+    <div id="root" class="h-full w-full"></div>
   <script type="module" src="/index.tsx"></script>
 </body>
 </html>

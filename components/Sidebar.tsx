@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { TopicNode } from '../types';
 
@@ -19,8 +20,6 @@ const SidebarItem: React.FC<SidebarItemProps> = ({ node, depth = 0, selectedId, 
     e.stopPropagation();
     if (hasChildren) {
       toggleExpand(node.id);
-    } else {
-      onSelect(node);
     }
   };
 
@@ -37,17 +36,25 @@ const SidebarItem: React.FC<SidebarItemProps> = ({ node, depth = 0, selectedId, 
       <div
         onClick={handleSelect}
         className={`
-          flex items-center justify-between p-3 cursor-pointer transition-colors duration-200 border-b border-slate-800/50
+          flex items-center justify-between p-3 cursor-pointer transition-all duration-200 border-b border-slate-800/50
           ${isSelected ? 'bg-indigo-600 text-white' : 'hover:bg-slate-800 text-slate-300'}
         `}
         style={{ paddingLeft: `${depth * 16 + 12}px` }}
       >
-        <span className="font-medium text-sm mr-2 whitespace-normal leading-snug">{node.title}</span>
+        <span className={`text-sm mr-2 whitespace-normal leading-snug ${isSelected ? 'font-bold' : 'font-medium'}`}>
+            {node.title}
+        </span>
         
         {hasChildren && (
           <button
             onClick={handleToggle}
-            className="w-6 h-6 shrink-0 flex items-center justify-center rounded hover:bg-white/10 text-lg font-bold leading-none"
+            className={`
+                w-6 h-6 shrink-0 flex items-center justify-center rounded text-xs font-bold leading-none border
+                ${isSelected 
+                    ? 'bg-indigo-500 border-indigo-400 text-white hover:bg-indigo-400' 
+                    : 'bg-slate-800 border-slate-700 text-slate-400 hover:bg-slate-700 hover:text-white'
+                }
+            `}
           >
             {isExpanded ? '−' : '+'}
           </button>
@@ -55,7 +62,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({ node, depth = 0, selectedId, 
       </div>
 
       {hasChildren && isExpanded && (
-        <div className="bg-slate-900/50">
+        <div className="bg-black/20 shadow-inner">
           {node.children!.map((child) => (
             <SidebarItem
               key={child.id}
@@ -107,9 +114,14 @@ export const Sidebar: React.FC<SidebarProps> = ({ data, selectedId, onSelect }) 
 
   return (
     <div className="w-80 bg-slate-900 h-full flex flex-col border-r border-slate-800 shadow-xl z-10">
-      <div className="p-6 border-b border-slate-800 bg-slate-900 z-20 sticky top-0">
-        <h1 className="text-xl font-bold text-white tracking-tight">Calculus 1A</h1>
-        <p className="text-xs text-slate-400 uppercase tracking-wider mt-1">Differentiation</p>
+      <div className="p-6 border-b border-slate-800 bg-slate-900 z-20 sticky top-0 flex flex-col gap-1">
+        <h1 className="text-2xl font-bold text-white tracking-tight flex items-center gap-2">
+             Calculus 1A
+        </h1>
+        <div className="flex items-center justify-between text-xs text-slate-400 uppercase tracking-wider font-semibold">
+            <span>Differentiation</span>
+            <span className="bg-indigo-900 text-indigo-300 px-2 py-0.5 rounded">1A</span>
+        </div>
       </div>
       
       <div className="flex-1 overflow-y-auto pb-10 scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-slate-900">
@@ -125,8 +137,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ data, selectedId, onSelect }) 
         ))}
       </div>
       
-      <div className="p-4 border-t border-slate-800 text-xs text-slate-500 text-center">
-        Powered by Gemini
+      <div className="p-4 border-t border-slate-800 text-[10px] text-slate-600 text-center font-mono">
+        Learn, Understand, Practise, Test        
       </div>
     </div>
   );

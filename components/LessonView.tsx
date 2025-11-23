@@ -1,55 +1,35 @@
 
-
-
 import React, { useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { LessonState } from '../types';
-import { MotivationSimulators } from './LimitSimulators';
-import { IntroLimitsQuiz } from './QuizGame';
-import { MotivationQuiz } from './MotivationQuiz';
-import { CodeLab } from './CodeLab';
-import { MovingCloser } from './MovingCloser';
-import { MovingCloserQuiz } from './MovingCloserQuiz';
-import { MovingCloserCodeLab } from './MovingCloserCodeLab';
-import { OneSidedLimits } from './OneSidedLimits';
-import { OneSidedLimitsQuiz } from './OneSidedLimitsQuiz';
-import { OneSidedLimitsCodeLab } from './OneSidedLimitsCodeLab';
-import { LimitDefinitions } from './LimitDefinitions';
-import { MoreLimitsVisual } from './MoreLimitsVisual';
-import { MoreLimitsQuiz } from './MoreLimitsQuiz';
-import { MoreLimitsCodeLab } from './MoreLimitsCodeLab';
-import { PossibleLimitBehaviors } from './PossibleLimitBehaviors';
-import { PossibleLimitBehaviorsQuiz } from './PossibleLimitBehaviorsQuiz';
-import { PossibleLimitBehaviorsCodeLab } from './PossibleLimitBehaviorsCodeLab';
-import { QuickLimitQuestionsVisual } from './QuickLimitQuestionsVisual';
-import { QuickLimitQuestionsQuiz } from './QuickLimitQuestionsQuiz';
-import { QuickLimitQuestionsCodeLab } from './QuickLimitQuestionsCodeLab';
-import { TheOverallLimitVisual } from './TheOverallLimitVisual';
-import { TheOverallLimitQuiz } from './TheOverallLimitQuiz';
-import { TheOverallLimitCodeLab } from './TheOverallLimitCodeLab';
-import { LimitDefinitionVisual } from './LimitDefinitionVisual';
-import { LimitDefinitionQuiz } from './LimitDefinitionQuiz';
-import { LimitDefinitionCodeLab } from './LimitDefinitionCodeLab';
-import { LimitsFromGraphsVisual } from './LimitsFromGraphsVisual';
-import { LimitsFromGraphsQuiz } from './LimitsFromGraphsQuiz';
-import { LimitsFromGraphsCodeLab } from './LimitsFromGraphsCodeLab';
-import { ReviewProblemsVisual } from './ReviewProblemsVisual';
-import { ReviewProblemsQuiz } from './ReviewProblemsQuiz';
-import { ReviewProblemsCodeLab } from './ReviewProblemsCodeLab';
-import { LimitLawsVisual } from './LimitLawsVisual';
-import { LimitLawsQuiz } from './LimitLawsQuiz';
-import { LimitLawsCodeLab } from './LimitLawsCodeLab';
-import { LimitLawsAdvancedVisual } from './LimitLawsAdvancedVisual';
-import { LimitLawsAdvancedQuiz } from './LimitLawsAdvancedQuiz';
-import { LimitLawsAdvancedCodeLab } from './LimitLawsAdvancedCodeLab';
-import { SummaryVisual } from './SummaryVisual';
-import { SummaryQuiz } from './SummaryQuiz';
-import { SummaryCodeLab } from './SummaryCodeLab';
+import * as Limits from './introductionToLimitComponent';
 import { SelectionReader } from './TextToSpeech';
 
 interface LessonViewProps {
   state: LessonState;
 }
+
+// Map topic IDs to their respective components
+const COMPONENT_MAP: Record<string, {
+  Visual?: React.ComponentType<any>;
+  Quiz?: React.ComponentType<any>;
+  Code?: React.ComponentType<any>;
+}> = {
+  'limit-1': { Visual: Limits.MotivationSimulators, Quiz: Limits.MotivationQuiz, Code: Limits.CodeLab },
+  'limit-3': { Visual: Limits.MovingCloser, Quiz: Limits.MovingCloserQuiz, Code: Limits.MovingCloserCodeLab },
+  'limit-4': { Visual: Limits.OneSidedLimits, Quiz: Limits.OneSidedLimitsQuiz, Code: Limits.OneSidedLimitsCodeLab },
+  'limit-5': { Visual: Limits.LimitDefinitions }, // Visualization only, no tabs
+  'limit-6': { Visual: Limits.MoreLimitsVisual, Quiz: Limits.MoreLimitsQuiz, Code: Limits.MoreLimitsCodeLab },
+  'limit-7': { Visual: Limits.PossibleLimitBehaviors, Quiz: Limits.PossibleLimitBehaviorsQuiz, Code: Limits.PossibleLimitBehaviorsCodeLab },
+  'limit-8': { Visual: Limits.QuickLimitQuestionsVisual, Quiz: Limits.QuickLimitQuestionsQuiz, Code: Limits.QuickLimitQuestionsCodeLab },
+  'limit-9': { Visual: Limits.TheOverallLimitVisual, Quiz: Limits.TheOverallLimitQuiz, Code: Limits.TheOverallLimitCodeLab },
+  'limit-10': { Visual: Limits.LimitDefinitionVisual, Quiz: Limits.LimitDefinitionQuiz, Code: Limits.LimitDefinitionCodeLab },
+  'limit-11': { Visual: Limits.LimitsFromGraphsVisual, Quiz: Limits.LimitsFromGraphsQuiz, Code: Limits.LimitsFromGraphsCodeLab },
+  'limit-12': { Visual: Limits.ReviewProblemsVisual, Quiz: Limits.ReviewProblemsQuiz, Code: Limits.ReviewProblemsCodeLab },
+  'limit-13': { Visual: Limits.LimitLawsVisual, Quiz: Limits.LimitLawsQuiz, Code: Limits.LimitLawsCodeLab },
+  'limit-14': { Visual: Limits.LimitLawsAdvancedVisual, Quiz: Limits.LimitLawsAdvancedQuiz, Code: Limits.LimitLawsAdvancedCodeLab },
+  'limit-15': { Visual: Limits.SummaryVisual, Quiz: Limits.SummaryQuiz, Code: Limits.SummaryCodeLab },
+};
 
 export const LessonView: React.FC<LessonViewProps> = ({ state }) => {
   const [activeTab, setActiveTab] = useState<'learn' | 'quiz' | 'code'>('learn');
@@ -62,7 +42,6 @@ export const LessonView: React.FC<LessonViewProps> = ({ state }) => {
   // Global MathJax Typeset Trigger
   useEffect(() => {
     if ((window as any).MathJax && (window as any).MathJax.typesetPromise) {
-      // Small timeout to ensure DOM is ready
       setTimeout(() => {
         (window as any).MathJax.typesetPromise().catch((err: any) => console.log('MathJax error:', err));
       }, 50);
@@ -81,11 +60,9 @@ export const LessonView: React.FC<LessonViewProps> = ({ state }) => {
     );
   }
 
-  // Topics that have interactive tabs
-  const interactiveTopics = [
-    'limit-1', 'limit-3', 'limit-4', 'limit-6', 'limit-7', 'limit-8', 'limit-9', 
-    'limit-10', 'limit-11', 'limit-12', 'limit-13', 'limit-14', 'limit-15'
-  ];
+  // Determine active components
+  const components = COMPONENT_MAP[state.topicId];
+  const hasTabs = components && (components.Quiz || components.Code);
 
   // Helper to render tabs
   const renderTabs = () => (
@@ -100,29 +77,29 @@ export const LessonView: React.FC<LessonViewProps> = ({ state }) => {
         >
             Visual Guide
         </button>
-        {interactiveTopics.includes(state.topicId!) && (
-            <>
-                <button 
-                    onClick={() => setActiveTab('quiz')}
-                    className={`py-3 px-4 text-sm font-bold border-b-2 transition-colors whitespace-nowrap ${
-                        activeTab === 'quiz' 
-                        ? 'border-indigo-600 text-indigo-600' 
-                        : 'border-transparent text-slate-500 hover:text-slate-800'
-            }`}
-                >
-                    Quiz Game
-                </button>
-                <button 
-                    onClick={() => setActiveTab('code')}
-                    className={`py-3 px-4 text-sm font-bold border-b-2 transition-colors whitespace-nowrap ${
-                        activeTab === 'code' 
-                        ? 'border-indigo-600 text-indigo-600' 
-                        : 'border-transparent text-slate-500 hover:text-slate-800'
-                    }`}
-                >
-                    Python Lab
-                </button>
-            </>
+        {components?.Quiz && (
+            <button 
+                onClick={() => setActiveTab('quiz')}
+                className={`py-3 px-4 text-sm font-bold border-b-2 transition-colors whitespace-nowrap ${
+                    activeTab === 'quiz' 
+                    ? 'border-indigo-600 text-indigo-600' 
+                    : 'border-transparent text-slate-500 hover:text-slate-800'
+                }`}
+            >
+                Quiz Game
+            </button>
+        )}
+        {components?.Code && (
+            <button 
+                onClick={() => setActiveTab('code')}
+                className={`py-3 px-4 text-sm font-bold border-b-2 transition-colors whitespace-nowrap ${
+                    activeTab === 'code' 
+                    ? 'border-indigo-600 text-indigo-600' 
+                    : 'border-transparent text-slate-500 hover:text-slate-800'
+                }`}
+            >
+                Python Lab
+            </button>
         )}
     </div>
   );
@@ -141,8 +118,8 @@ export const LessonView: React.FC<LessonViewProps> = ({ state }) => {
         </div>
       </header>
 
-      {/* Render Tabs for specific topics */}
-      {interactiveTopics.includes(state.topicId!) && renderTabs()}
+      {/* Render Tabs if applicable */}
+      {hasTabs && renderTabs()}
 
       {/* Content Area */}
       <div className="flex-1 overflow-y-auto p-8 md:px-16 max-w-5xl mx-auto w-full">
@@ -164,242 +141,47 @@ export const LessonView: React.FC<LessonViewProps> = ({ state }) => {
             </div>
         )}
 
-        {/* --- Topic 1: Motivation Content Logic --- */}
-        {state.topicId === 'limit-1' ? (
-          <div className="animate-fade-in">
-            {activeTab === 'learn' && (
-                <>
-                    <MotivationSimulators />
-                    {state.content && (
-                         <details className="mt-10 border-t border-slate-200 pt-6">
-                            <summary className="cursor-pointer text-slate-500 font-medium mb-4 hover:text-indigo-600 transition select-none">
-                                Read Full Lecture Transcript
-                            </summary>
-                            <article className="markdown-body pb-20 text-sm text-slate-600">
-                                <ReactMarkdown>{state.content}</ReactMarkdown>
-                            </article>
-                         </details>
-                    )}
-                </>
-            )}
-            {activeTab === 'quiz' && <MotivationQuiz />}
-            {activeTab === 'code' && <CodeLab />}
-          </div>
-        ) : state.topicId === 'limit-3' ? (
-            /* --- Topic 3: Moving Closer Logic --- */
-            <div className="animate-fade-in">
-                {activeTab === 'learn' && (
-                    <>
-                        <MovingCloser />
-                        {state.content && (
-                            <details className="mt-10 border-t border-slate-200 pt-6">
-                                <summary className="cursor-pointer text-slate-500 font-medium mb-4 hover:text-indigo-600 transition select-none">
-                                    Read Full Lecture Transcript
-                                </summary>
-                                <article className="markdown-body pb-20 text-sm text-slate-600">
-                                    <ReactMarkdown>{state.content}</ReactMarkdown>
-                                </article>
-                            </details>
-                        )}
-                    </>
-                )}
-                {activeTab === 'quiz' && <MovingCloserQuiz />}
-                {activeTab === 'code' && <MovingCloserCodeLab />}
+        {/* Special case for Intro to Limits (limit-2) which doesn't follow standard tab structure */}
+        {state.topicId === 'limit-2' && (
+            <div className="mb-8 animate-fade-in">
+                <Limits.IntroLimitsQuiz />
             </div>
-        ) : state.topicId === 'limit-4' ? (
-            /* --- Topic 4: One-sided limits Logic --- */
-            <div className="animate-fade-in">
-                {activeTab === 'learn' && (
-                    <>
-                        <OneSidedLimits />
-                        {state.content && (
-                            <details className="mt-10 border-t border-slate-200 pt-6">
-                                <summary className="cursor-pointer text-slate-500 font-medium mb-4 hover:text-indigo-600 transition select-none">
-                                    Read Full Lecture Transcript
-                                </summary>
-                                <article className="markdown-body pb-20 text-sm text-slate-600">
-                                    <ReactMarkdown>{state.content}</ReactMarkdown>
-                                </article>
-                            </details>
-                        )}
-                    </>
-                )}
-                {activeTab === 'quiz' && <OneSidedLimitsQuiz />}
-                {activeTab === 'code' && <OneSidedLimitsCodeLab />}
-            </div>
-        ) : state.topicId === 'limit-5' ? (
-           /* --- Topic 5: Definitions Logic --- */
-           <div className="animate-fade-in">
-             <LimitDefinitions />
-           </div>
-        ) : state.topicId === 'limit-6' ? (
-           /* --- Topic 6: A few more limits Logic --- */
-           <div className="animate-fade-in">
-               {activeTab === 'learn' && <MoreLimitsVisual />}
-               {activeTab === 'quiz' && <MoreLimitsQuiz />}
-               {activeTab === 'code' && <MoreLimitsCodeLab />}
-           </div>
-        ) : state.topicId === 'limit-7' ? (
-           /* --- Topic 7: Possible behaviors Logic --- */
-           <div className="animate-fade-in">
-               {activeTab === 'learn' && (
-                   <>
-                       <PossibleLimitBehaviors />
-                       {state.content && (
-                           <details className="mt-10 border-t border-slate-200 pt-6">
-                               <summary className="cursor-pointer text-slate-500 font-medium mb-4 hover:text-indigo-600 transition select-none">
-                                   Read Full Lecture Transcript
-                               </summary>
-                               <article className="markdown-body pb-20 text-sm text-slate-600">
-                                   <ReactMarkdown>{state.content}</ReactMarkdown>
-                                </article>
-                           </details>
-                       )}
-                   </>
-               )}
-               {activeTab === 'quiz' && <PossibleLimitBehaviorsQuiz />}
-               {activeTab === 'code' && <PossibleLimitBehaviorsCodeLab />}
-           </div>
-        ) : state.topicId === 'limit-8' ? (
-           /* --- Topic 8: Quick Limit Questions Logic --- */
-           <div className="animate-fade-in">
-               {activeTab === 'learn' && <QuickLimitQuestionsVisual />}
-               {activeTab === 'quiz' && <QuickLimitQuestionsQuiz />}
-               {activeTab === 'code' && <QuickLimitQuestionsCodeLab />}
-           </div>
-        ) : state.topicId === 'limit-9' ? (
-           /* --- Topic 9: The Overall Limit Logic --- */
-           <div className="animate-fade-in">
-               {activeTab === 'learn' && <TheOverallLimitVisual />}
-               {activeTab === 'quiz' && <TheOverallLimitQuiz />}
-               {activeTab === 'code' && <TheOverallLimitCodeLab />}
-           </div>
-        ) : state.topicId === 'limit-10' ? (
-           /* --- Topic 10: Limit Definition Logic --- */
-           <div className="animate-fade-in">
-               {activeTab === 'learn' && (
-                   <>
-                       <LimitDefinitionVisual />
-                       {state.content && (
-                           <details className="mt-10 border-t border-slate-200 pt-6">
-                               <summary className="cursor-pointer text-slate-500 font-medium mb-4 hover:text-indigo-600 transition select-none">
-                                   Read Full Lecture Transcript
-                               </summary>
-                               <article className="markdown-body pb-20 text-sm text-slate-600">
-                                   <ReactMarkdown>{state.content}</ReactMarkdown>
-                                </article>
-                           </details>
-                       )}
-                   </>
-               )}
-               {activeTab === 'quiz' && <LimitDefinitionQuiz />}
-               {activeTab === 'code' && <LimitDefinitionCodeLab />}
-           </div>
-        ) : state.topicId === 'limit-11' ? (
-           /* --- Topic 11: Limits from graphs Logic --- */
-           <div className="animate-fade-in">
-               {activeTab === 'learn' && (
-                   <>
-                       <LimitsFromGraphsVisual />
-                       {state.content && (
-                           <div className="mt-8 bg-slate-50 p-6 rounded-xl border border-slate-200">
-                               <h4 className="font-bold text-slate-700 mb-2">Practice Set</h4>
-                               <p className="text-slate-600 text-sm mb-4">
-                                   This section contains practice problems. Switch to the <strong>Quiz Game</strong> tab to solve the problems seen in the textbook!
-                               </p>
-                           </div>
-                       )}
-                   </>
-               )}
-               {activeTab === 'quiz' && <LimitsFromGraphsQuiz />}
-               {activeTab === 'code' && <LimitsFromGraphsCodeLab />}
-           </div>
-        ) : state.topicId === 'limit-12' ? (
-           /* --- Topic 12: Review Problems Logic --- */
-           <div className="animate-fade-in">
-               {activeTab === 'learn' && <ReviewProblemsVisual />}
-               {activeTab === 'quiz' && <ReviewProblemsQuiz />}
-               {activeTab === 'code' && <ReviewProblemsCodeLab />}
-           </div>
-        ) : state.topicId === 'limit-13' ? (
-           /* --- Topic 13: Limit Laws Logic --- */
-           <div className="animate-fade-in">
-               {activeTab === 'learn' && (
-                   <>
-                       <LimitLawsVisual />
-                       {state.content && (
-                           <details className="mt-10 border-t border-slate-200 pt-6">
-                               <summary className="cursor-pointer text-slate-500 font-medium mb-4 hover:text-indigo-600 transition select-none">
-                                   Read Full Lecture Transcript
-                               </summary>
-                               <article className="markdown-body pb-20 text-sm text-slate-600">
-                                   <ReactMarkdown>{state.content}</ReactMarkdown>
-                                </article>
-                           </details>
-                       )}
-                   </>
-               )}
-               {activeTab === 'quiz' && <LimitLawsQuiz />}
-               {activeTab === 'code' && <LimitLawsCodeLab />}
-           </div>
-        ) : state.topicId === 'limit-14' ? (
-           /* --- Topic 14: Limit Laws (Advanced) Logic --- */
-           <div className="animate-fade-in">
-               {activeTab === 'learn' && (
-                   <>
-                       <LimitLawsAdvancedVisual />
-                       {state.content && (
-                           <details className="mt-10 border-t border-slate-200 pt-6">
-                               <summary className="cursor-pointer text-slate-500 font-medium mb-4 hover:text-indigo-600 transition select-none">
-                                   Read Full Proof & Derivation
-                               </summary>
-                               <article className="markdown-body pb-20 text-sm text-slate-600">
-                                   <ReactMarkdown>{state.content}</ReactMarkdown>
-                                </article>
-                           </details>
-                       )}
-                   </>
-               )}
-               {activeTab === 'quiz' && <LimitLawsAdvancedQuiz />}
-               {activeTab === 'code' && <LimitLawsAdvancedCodeLab />}
-           </div>
-        ) : state.topicId === 'limit-15' ? (
-           /* --- Topic 15: Summary Logic --- */
-           <div className="animate-fade-in">
-               {activeTab === 'learn' && (
-                   <>
-                       <SummaryVisual />
-                       {state.content && (
-                           <div className="mt-10 border-t border-slate-200 pt-6">
-                               <article className="markdown-body pb-20 text-sm text-slate-600">
-                                   <ReactMarkdown>{state.content}</ReactMarkdown>
-                                </article>
-                           </div>
-                       )}
-                   </>
-               )}
-               {activeTab === 'quiz' && <SummaryQuiz />}
-               {activeTab === 'code' && <SummaryCodeLab />}
-           </div>
-        ) : (
-          /* --- Default Behavior for other topics --- */
-          <div className="animate-fade-in">
-             {state.topicId === 'limit-2' && (
-                <div className="mb-8">
-                    <IntroLimitsQuiz />
-                </div>
-             )}
+        )}
 
-             {state.content ? (
-               <article className="markdown-body pb-20">
-                  <ReactMarkdown>{state.content}</ReactMarkdown>
-               </article>
-             ) : (
-               <div className="text-center text-slate-400 mt-10">
-                  <p>Content unavailable.</p>
-               </div>
-             )}
-          </div>
+        {/* Dynamic Component Rendering */}
+        {components ? (
+            <div className="animate-fade-in">
+                {activeTab === 'learn' && components.Visual && (
+                    <>
+                        <components.Visual />
+                        {state.content && (
+                            <details className="mt-10 border-t border-slate-200 pt-6" open={!components.Quiz && !components.Code}>
+                                <summary className="cursor-pointer text-slate-500 font-medium mb-4 hover:text-indigo-600 transition select-none">
+                                    {components.Quiz ? "Read Full Lecture Transcript" : "Lesson Content"}
+                                </summary>
+                                <article className="markdown-body pb-20 text-sm text-slate-600">
+                                    <ReactMarkdown>{state.content}</ReactMarkdown>
+                                </article>
+                            </details>
+                        )}
+                    </>
+                )}
+                {activeTab === 'quiz' && components.Quiz && <components.Quiz />}
+                {activeTab === 'code' && components.Code && <components.Code />}
+            </div>
+        ) : (
+            /* Fallback for text-only topics */
+            <div className="animate-fade-in">
+                {state.content ? (
+                    <article className="markdown-body pb-20">
+                        <ReactMarkdown>{state.content}</ReactMarkdown>
+                    </article>
+                ) : (
+                    <div className="text-center text-slate-400 mt-10">
+                        <p>Select a topic to load content.</p>
+                    </div>
+                )}
+            </div>
         )}
       </div>
     </div>

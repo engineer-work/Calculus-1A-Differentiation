@@ -12,4 +12,4 @@ lfx_crowdfunding: # Replace with a single LFX Crowdfunding project-name e.g., cl
 polar: # Replace with a single Polar username
 buy_me_a_coffee: # Replace with a single Buy Me a Coffee username
 thanks_dev: # Replace with a single thanks.dev username
-custom: [    ../Calculus-1A-Differentiation/Image_20251124_225537.png]
+custom: [https://raw.githubusercontent.com/engineer-work/Calculus-1A-Differentiation/refs/heads/main/scan.png]

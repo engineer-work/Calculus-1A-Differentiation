@@ -1,6 +1,6 @@
 ## Sponsership
 
-![]()
+![](Image_20251124_225537.png)
 
 ## Run Locally
 
